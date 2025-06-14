@@ -10,9 +10,6 @@
 			font-size: 15px; 
 			font-family: 'Meiryo UI';
 		}
-		ul,ol{
-			margin-left: 15px;
-		}
 	</style>
 </head>
 
@@ -23,7 +20,7 @@
 	const input = document.getElementById("input");
 	input.addEventListener("keydown", (event) => {
 		console.log(event);
-		if (event.code === "Enter") {
+		if (event.code === "Enter" && input.value!=="") {
 			const output = document.getElementById("output");
 			output.innerHTML += `<b>${input.value}</b><br>`;
 			input.value = "";
