@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>okiba</title>
+	<!--<link rel="icon" href="https://birdwatcheryt.github.io/image/icon.ico">
+	<link rel="stylesheet" type="text/css" href="https://birdwatcheryt.github.io/footer.css">-->
+	<style>
+	body{
+
+	}
+	ul,ol{
+		margin-left: 15px;
+	}
+	h1:before{
+		content:"\1f426";
+		margin-right:3px;
+	}
+    h2:before{
+        content:"\1f54a";
+        margin-right:3px;
+    }
+    </style>
+</head>
+
+<body>
+  <input id="input">
+  <button onclick="clicked();">ボタン</button>
+  <div id="output"></div>
+  
+  <script>
+  	function clicked() {
+  		const input = document.getElementById("input");
+  		const output = document.getElementById("output");
+  		output.innerHTML = `<b>${input.value}</b>`;
+  	}
+  </script>
+  
+<footer></footer>
+</body>
+  
+</html>
