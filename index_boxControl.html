@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>nannka</title>
+    
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/"
+        }
+      }
+    </script>
+    
+    <script type="module">
+        import * as THREE from "three";
+        import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+        // サイズを指定
+        const width = 960;
+        const height = 540;
+
+        // レンダラーを作成
+        const canvasElement = document.querySelector('#myCanvas')
+        const renderer = new THREE.WebGLRenderer({
+          canvas: canvasElement,
+        });
+        renderer.setSize(width, height);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.set(0, 0, +1000);
+        
+        // カメラコントローラーを作成
+        const controls = new OrbitControls(camera, canvasElement);
+
+        // 箱を作成
+        const geometry = new THREE.BoxGeometry(400, 400, 400);
+        const material = new THREE.MeshNormalMaterial();  //NomalMaterialは自らが発光する
+        const box = new THREE.Mesh(geometry, material);
+        scene.add(box);
+
+        tick();
+
+        // 毎フレーム時に実行されるループイベントです
+        function tick() {
+            // レンダリング
+            renderer.render(scene, camera);
+            requestAnimationFrame(tick);
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+</body>
+
+</html>
