@@ -1,11 +1,11 @@
 enchant();
 
 window.onload = function () {
-	const game = new Game(400, 500);  	//画面サイズを400*500にする。
+	const game = new Game(400, 500);  	//画面サイズ
 
 	//クリック音
 	const clickSndUrl = "sound/click.wav";	//game.htmlからの相対パス
-	game.preload([clickSndUrl]); 		//データを読み込んでおく
+	game.preload([clickSndUrl]); 			//データを読み込む
 
 	//失敗音
 	const missSnd = "sound/puchun.wav";	
@@ -19,6 +19,10 @@ window.onload = function () {
 	const tweetImgUrl = "img/tweet.png";
 	game.preload([tweetImgUrl]);	
 
+	//ゲームオーバー画像
+	const gameoverImg = "img/gameover.png";
+	game.preload([gameoverImg]);	
+
 	//青色ゲート画像
 	const blueGateImg = "img/blue.png";
 	game.preload([blueGateImg]);	
@@ -29,14 +33,14 @@ window.onload = function () {
 
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
-
 		let state = 0;		//1/2判定結果
 		let tryCount = 1;	//試行回数
 		let nowBunbo = 1; 	//現在の確率分母
 		let maxBunbo = 1;	//最高到達分母
 		let rireki = "";	//正解履歴の文字列
 
-		//メインシーン//
+
+		////メインシーン////
 		const mainScene = new Scene();					//シーン作成
 		game.pushScene(mainScene);  					//mainSceneシーンオブジェクトを画面に設置
 		mainScene.backgroundColor = "black"; 			//シーンの背景色
@@ -44,10 +48,10 @@ window.onload = function () {
 		//試行回数表示テキスト
 		const countText = new Label();					//テキストはLabelクラス
 		countText.font = "20px Meiryo";					//フォント設定
-		countText.color = 'rgba(255,255,255,1)';	   //色　RGB+透明度
+		countText.color = 'rgba(255,255,255,1)';	   //色（RGB+透明度）
 		countText.width = 400;							//横幅
 		countText.moveTo(10, 30);						//表示位置
-		mainScene.addChild(countText);					//mainSceneシーンにこのテキストを埋め込む
+		mainScene.addChild(countText);					//シーンにこのテキストを追加
 
 		//確率表示テキスト
 		const kakuritsuText = new Label();	
@@ -86,7 +90,7 @@ window.onload = function () {
 		const blueGateButton = new Sprite(117, 166);		//ボタンサイズ
 		blueGateButton.moveTo(60, 150);						//ボタンの位置
 		blueGateButton.image = game.assets[blueGateImg];	//ボタンに表示する画像
-		mainScene.addChild(blueGateButton);					//mainSceneに画像を貼り付ける  
+		mainScene.addChild(blueGateButton);					//シーンにボタンを追加  
 		
 		//緑ゲートボタン
 		const greenGateButton = new Sprite(117, 166);
@@ -97,13 +101,12 @@ window.onload = function () {
 		//青ゲートボタンをクリックした際の処理
 		blueGateButton.ontouchend = function () {								
 			game.assets[clickSndUrl].clone().play();	//音を鳴らす
+			var rand =  Math.floor(Math.random()*11);	//ランダム値抽選（0~10の整数）
 
-			//ランダム値抽選（0~10の整数）
-			var rand =  Math.floor(Math.random()*11);
 			if (rand % 2 == 1) {	
-				state = 1;				//奇数だったら1/2成功とする
-				nowBunbo = nowBunbo*2;	//表示用分母を2倍する
-				rireki = "青" + rireki;	//正解履歴文字列を追加
+				state = 1;					//奇数だったら1/2成功とする
+				nowBunbo = nowBunbo*2;		//表示用分母を2倍する
+				rireki = "青" + rireki;		//正解履歴文字列を先頭に追加
 				rirekiText.text = rireki;
 			} else {
 				state = 2;	//失敗
@@ -113,23 +116,22 @@ window.onload = function () {
 				maxBunboText.text = "1/" + maxBunbo;
 				rireki = "緑" + rireki;
 				rirekiText.text = rireki;
-				game.assets[missSnd].clone().play();//ゲームオーバー音
+				game.assets[missSnd].clone().play();	//ゲームオーバー音
 			}
 		};
 
-		//緑ゲートボタンをクリックした際の処理
+		//緑ゲートボタンをクリックした際の処理（履歴の記載文字以外は青と同じ）
 		greenGateButton.ontouchend = function () {								
 			game.assets[clickSndUrl].clone().play();
-
-			//ランダム値抽選（0~10の整数）
 			var rand =  Math.floor(Math.random()*11);
+
 			if (rand % 2 == 1) {
-				state = 1;				//奇数だったら1/2成功とする
-				nowBunbo = nowBunbo*2;	//表示用分母を2倍する
+				state = 1;
+				nowBunbo = nowBunbo*2;
 				rireki = "緑" + rireki;
 				rirekiText.text = rireki;
 			} else {
-				state = 2;	//失敗
+				state = 2;
 				if(maxBunbo < nowBunbo){
 					maxBunbo = nowBunbo;
 				}
@@ -140,17 +142,16 @@ window.onload = function () {
 			}
 		};
 
-		//ゲームオーバー画面//
+
+		////ゲームオーバー画面////
 		const endScene = new Scene();
 		endScene.backgroundColor = "black";
 
-		//GAMEOVERテキスト
-		const gameOverText = new Label(); 
-		gameOverText.font = "20px Meiryo";	
-		gameOverText.color = 'rgba(255,255,255,1)';
-		gameOverText.width = 400;	
-		gameOverText.moveTo(140, 150);	
-		endScene.addChild(gameOverText);
+		//GAMEOVER画像 ※画像だけの貼り付けがわからんかったからボタンに張り付け
+		const gameOverBtn = new Sprite(210, 31);
+		gameOverBtn.moveTo(90, 150);
+		gameOverBtn.image = game.assets[gameoverImg];
+		endScene.addChild(gameOverBtn);
 
 		//確率テキスト
 		const kakuritsuTextEnd = new Label(); 
@@ -223,9 +224,8 @@ window.onload = function () {
 		};
 
 
-		//メインループ
+		////メインループ////
 		game.onenterframe = function () {
-
 			//数値系表示の更新
 			kakuritsuText.text = "1/" + nowBunbo;
 			countText.text = "試行" + tryCount +"回目";
@@ -236,7 +236,6 @@ window.onload = function () {
 				game.pushScene(endScene);	//endSceneシーンを読み込ませる
 
 				//ゲームオーバー後のテキスト表示
-				gameOverText.text = "GAMEOVER";
 				kakuritsuTextEnd.text = "1/"+nowBunbo;
 				toutatsuTextEnd.text = "最高到達点"
 				maxBunboTextEnd.text = "1/" + maxBunbo;
@@ -245,6 +244,7 @@ window.onload = function () {
 			}
 
 		};
+		
 	};
 
 	game.start();
