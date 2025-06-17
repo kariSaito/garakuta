@@ -462,7 +462,7 @@ window.onload = function () {
 
 		//リトライボタン処理
 		retryBtn.ontouchend = function () {		
-			nowBunbo = 1;
+			nowBunbo = 4096;
 			tryCount++;
 			countNumText.text = tryCount;
 			countNumTextEnd.text = tryCount;
@@ -524,8 +524,9 @@ window.onload = function () {
 		maxBunboTextClear.font = fontStyle;
 		maxBunboTextClear.color = clearFontColor;
 		maxBunboTextClear.width = 150;	
-		maxBunboTextClear.moveTo(315, 55);
+		maxBunboTextClear.moveTo(305, 55);
 		clearScene.addChild(maxBunboTextClear);	
+		maxBunboTextClear.text ="1/8192"
 
 		//最大到達点テキスト
 		const toutatsuTextClear = new Label("最高到達点");	
