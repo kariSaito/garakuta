@@ -462,7 +462,7 @@ window.onload = function () {
 
 		//リトライボタン処理
 		retryBtn.ontouchend = function () {		
-			nowBunbo = 4096;
+			nowBunbo = 1;
 			tryCount++;
 			countNumText.text = tryCount;
 			countNumTextEnd.text = tryCount;
