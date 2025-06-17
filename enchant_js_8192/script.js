@@ -85,7 +85,7 @@ window.onload = function () {
 		const rirekiText = new Label();	
 		rirekiText.font = fontStyle;
 		rirekiText.color = fontColor;
-		rirekiText.width = 348;	
+		rirekiText.width = 349;	
 		rirekiText.moveTo(20, 370);
 		mainScene.addChild(rirekiText);	
 
