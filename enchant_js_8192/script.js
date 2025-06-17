@@ -60,33 +60,66 @@ window.onload = function () {
 		let fontColor = 'rgba(255,255,255,1)';	//フォント色（RGB+透明度）
 
 
-		////メインシーン////
+		//////スタート画面/////////////////////////////////////////////////////
+		const startScene = new Scene();
+		startScene.backgroundColor = "black";
+		game.pushScene(startScene);  
+
+		//タイトル
+		const titleBtn = new Sprite(328, 103);
+		titleBtn.moveTo(40, 100);
+		titleBtn.image = game.assets[titleImg];
+		startScene.addChild(titleBtn);
+
+		//スタートボタン
+		const startBtn = new Sprite(120, 60);
+		startBtn.moveTo(140, 300);
+		startBtn.image = game.assets[startImg];
+		startScene.addChild(startBtn);
+
+		//スタートボタン処理
+		startBtn.ontouchend = function () {		
+			state = 0;
+			nowBunbo = 1;
+			game.popScene();					//現在のシーンを非表示に
+			game.pushScene(mainScene);			//mainSceneシーンを表示する
+		};
+
+
+		//////メイン画面////////////////////////////////////////////////////
 		const mainScene = new Scene();					//シーン作成
 		mainScene.backgroundColor = "black"; 			//シーンの背景色
 
-		//試行回数表示テキスト
-		const countText = new Label();					//テキストはLabelクラス
+		//試行回数テキスト
+		const countText = new Label("試行回数");		//テキストはLabelクラス
 		countText.font = fontStyle;						//フォント設定
 		countText.color = fontColor;	   				//フォント色
 		countText.width = 400;							//横幅
-		countText.moveTo(10, 30);						//表示位置
+		countText.moveTo(20, 30);						//表示位置
 		mainScene.addChild(countText);					//シーンにこのテキストを追加
-		countText.text = "試行" + tryCount +"回目";
+
+		//試行回数表示テキスト
+		const countNumText = new Label(tryCount);
+		countNumText.font = fontStyle;
+		countNumText.color = fontColor;	
+		countNumText.width = 400;
+		countNumText.moveTo(48, 55);
+		mainScene.addChild(countNumText);
 
 		//確率表示テキスト
 		const kakuritsuText = new Label();	
 		kakuritsuText.font = fontStyle;
 		kakuritsuText.color = fontColor;
 		kakuritsuText.width = 400;	
-		kakuritsuText.moveTo(180, 330);
+		kakuritsuText.moveTo(183, 320);
 		mainScene.addChild(kakuritsuText);	
 
 		//正解履歴表示テキスト
 		const rirekiText = new Label();	
 		rirekiText.font = fontStyle;
 		rirekiText.color = fontColor;
-		rirekiText.width = 349;	
-		rirekiText.moveTo(20, 370);
+		rirekiText.width = 347;	
+		rirekiText.moveTo(20, 365);
 		mainScene.addChild(rirekiText);	
 
 		//最大到達分母テキスト
@@ -98,50 +131,46 @@ window.onload = function () {
 		mainScene.addChild(maxBunboText);	
 
 		//最大到達点テキスト
-		const toutatsuText = new Label();	
+		const toutatsuText = new Label("最高到達点");	
 		toutatsuText.font = fontStyle;
 		toutatsuText.color = fontColor;
 		toutatsuText.width = 400;	
 		toutatsuText.moveTo(290, 30);
 		mainScene.addChild(toutatsuText);
-		toutatsuText.text = "最高到達点"
 
 		//青ゲートボタン
 		const blueGateButton = new Sprite(117, 166);		//ボタンサイズ
-		blueGateButton.moveTo(60, 150);						//ボタンの位置
+		blueGateButton.moveTo(65, 135);						//ボタンの位置
 		blueGateButton.image = game.assets[blueGateImg];	//ボタンに表示する画像
 		mainScene.addChild(blueGateButton);					//シーンにボタンを追加  
 		
 		//緑ゲートボタン
 		const greenGateButton = new Sprite(117, 166);
-		greenGateButton.moveTo(220, 150);
+		greenGateButton.moveTo(223, 135);
 		greenGateButton.image = game.assets[greenGateImg];
 		mainScene.addChild(greenGateButton);
 
 		//ゲートボタン用1/2チェック処理
 		function nibuCheck(iro){
-			var rand =  Math.floor(Math.random()*11);	//ランダム値抽選（0~10の整数）
-			if (rand % 2 == 1) {	
+			var rand =  Math.floor(Math.random()*11);		//ランダム値抽選（0~10の整数）
+			if (rand % 2 == 1) {							//奇数だったら1/2成功とする
 				game.assets[clickSndUrl].clone().play();	//音を鳴らす
-				state = 1;					//奇数だったら1/2成功とする
-				nowBunbo = nowBunbo*2;		//表示用分母を2倍する
+				nowBunbo = nowBunbo*2;						//表示用分母を2倍する
 				kakuritsuText.text = "1/" + nowBunbo;
-				iroAdd(iro);				//履歴に色を追加
+				iroAdd(iro);								//履歴に色を追加
 			} else {
-				state = 2;	//失敗
-				if(maxBunbo < nowBunbo){	//以前の最高分母より進んでいたら更新
-					maxBunbo = nowBunbo;
-				}
-				iroAdd(!iro);							//フラグを反転させて逆の色を追加する
-				kakuritsuTextEnd.text = "1/"+nowBunbo;	//ゲームオーバー後のテキスト表示更新
-				maxBunboTextEnd.text = "1/" + maxBunbo;
-				maxBunboText.text = "1/" + maxBunbo;
+				iroAdd(!iro);								//フラグを反転させて逆の色を追加する
+				kakuritsuTextEnd.text = "1/"+nowBunbo;		//ゲームオーバー後のテキスト表示更新
 				rirekiTextEnd.text = rireki;
-				countTextEnd.text = "試行" + tryCount +"回目";
-				jotai = "gameover";			//現在の状態をゲームオーバーに
-				game.popScene();			//mainSceneシーンを外す
-				game.pushScene(endScene);	//endSceneシーンを読み込ませる
+				jotai = "gameover";			
+				game.popScene();							//mainSceneシーンを外す
+				game.pushScene(endScene);					//endSceneシーンを読み込ませる
 			}
+			if(maxBunbo < nowBunbo){						//以前の最高分母より進んでいたら更新
+				maxBunbo = nowBunbo;
+			}
+			maxBunboTextEnd.text = "1/" + maxBunbo;
+			maxBunboText.text = "1/" + maxBunbo;
 		}
 
 		//正解履歴に色文字を追加
@@ -227,7 +256,7 @@ window.onload = function () {
 		}
 
 
-		////成績表示シーン////
+		//////成績表示画面////////////////////////////////////////////////////
 		const seisekiScene = new Scene();
 		seisekiScene.backgroundColor = "black"; 
 
@@ -361,8 +390,7 @@ window.onload = function () {
 		seisekiScene.addChild(kaku8192Text);
 
 
-
-		////ゲームオーバー画面////
+		//////ゲームオーバー画面////////////////////////////////////////////////////
 		const endScene = new Scene();
 		endScene.backgroundColor = "black";
 
@@ -389,33 +417,40 @@ window.onload = function () {
 		endScene.addChild(maxBunboTextEnd);	
 
 		//最大到達点テキスト
-		const toutatsuTextEnd = new Label();	
+		const toutatsuTextEnd = new Label("最高到達点");	
 		toutatsuTextEnd.font = fontStyle;
 		toutatsuTextEnd.color = fontColor;
 		toutatsuTextEnd.width = 400;	
 		toutatsuTextEnd.moveTo(290, 30);
 		endScene.addChild(toutatsuTextEnd);
-		toutatsuTextEnd.text = "最高到達点"
 
-		//試行回数表示テキスト
-		const countTextEnd = new Label();
-		countTextEnd.font = "20px Meiryo";
+		//試行回数テキスト
+		const countTextEnd = new Label("試行回数");
+		countTextEnd.font = fontStyle;
 		countTextEnd.color = fontColor;
 		countTextEnd.width = 400;
-		countTextEnd.moveTo(10, 30);
+		countTextEnd.moveTo(20, 30);
 		endScene.addChild(countTextEnd);
+
+		//試行回数表示テキスト
+		const countNumTextEnd = new Label(tryCount);
+		countNumTextEnd.font = fontStyle;
+		countNumTextEnd.color = fontColor;
+		countNumTextEnd.width = 400;
+		countNumTextEnd.moveTo(48, 55);
+		endScene.addChild(countNumTextEnd);
 
 		//履歴表示テキスト
 		const rirekiTextEnd = new Label();	
 		rirekiTextEnd.font = fontStyle;
 		rirekiTextEnd.color = fontColor;
 		rirekiTextEnd.width = 347;	
-		rirekiTextEnd.moveTo(20, 370);
+		rirekiTextEnd.moveTo(20, 365);
 		endScene.addChild(rirekiTextEnd);
 
 		//リトライボタン
 		const retryBtn = new Sprite(120, 60);
-		retryBtn.moveTo(50, 300);
+		retryBtn.moveTo(50, 280);
 		retryBtn.image = game.assets[retryImg];
 		endScene.addChild(retryBtn);
 
@@ -424,15 +459,17 @@ window.onload = function () {
 			state = 0;
 			nowBunbo = 1;
 			tryCount++;
-			countText.text = "試行" + tryCount +"回目";
+			countNumText.text = tryCount;
+			countNumTextEnd.text = tryCount;
+			kakuritsuText.text = ""
 			jotai = "main";
-			game.popScene();					//endSceneシーンを外す
-			game.pushScene(mainScene);			//mainSceneシーンを入れる
+			game.popScene();
+			game.pushScene(mainScene);
 		};
 
 		//ポストボタン
 		const tweetBtn = new Sprite(120, 60);
-		tweetBtn.moveTo(230, 300);
+		tweetBtn.moveTo(230, 280);
 		tweetBtn.image = game.assets[tweetImg];
 		endScene.addChild(tweetBtn);
 
@@ -453,32 +490,6 @@ window.onload = function () {
 		//成績ボタンクリック処理
 		seisekiEndBtn.ontouchend = function () {		
 			seisekiHyoji();
-		};
-
-
-		////スタート画面////
-		const startScene = new Scene();
-		startScene.backgroundColor = "black";
-		game.pushScene(startScene);  
-
-		//タイトル
-		const titleBtn = new Sprite(328, 103);
-		titleBtn.moveTo(40, 100);
-		titleBtn.image = game.assets[titleImg];
-		startScene.addChild(titleBtn);
-
-		//スタートボタン
-		const startBtn = new Sprite(120, 60);
-		startBtn.moveTo(140, 300);
-		startBtn.image = game.assets[startImg];
-		startScene.addChild(startBtn);
-
-		//スタートボタン処理
-		startBtn.ontouchend = function () {		
-			state = 0;
-			nowBunbo = 1;
-			game.popScene();					//現在のシーンを非表示に
-			game.pushScene(mainScene);			//mainSceneシーンを表示する
 		};
 		
 	};
