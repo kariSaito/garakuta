@@ -1,5 +1,5 @@
 enchant();
-
+//
 window.onload = function () {
 	const game = new Game(400, 500);  	//画面サイズ
 
