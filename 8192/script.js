@@ -470,7 +470,7 @@ window.onload = function () {
 		//ポストボタン処理
 		tweetBtn.ontouchend = function () {	
 			//ツイッターＡＰＩに送信
-			const url = encodeURI("https://karisaito.github.io/garakuta/enchant_js_8192/");
+			const url = encodeURI("https://karisaito.github.io/garakuta/8192/");
 			window.open("http://twitter.com/intent/tweet?text=" +
 				"最高1/" + maxBunbo + "まで進んだ！" + url); 
 		};
