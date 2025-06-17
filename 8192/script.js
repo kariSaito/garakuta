@@ -1,5 +1,5 @@
 enchant();
-//
+
 window.onload = function () {
 	const game = new Game(400, 500);  	//画面サイズ
 
@@ -43,6 +43,9 @@ window.onload = function () {
 	const modoruImg = "img/modoru.png";
 	game.preload([modoruImg]);	
 
+	//クリア画像
+	const clearImg = "img/clear.png";
+	game.preload([clearImg]);	
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
 		let tryCount = 1;	//試行回数
@@ -204,7 +207,12 @@ window.onload = function () {
 			else if(nowBunbo == 1024){ kaku1024++; }
 			else if(nowBunbo == 2048){ kaku2048++; }
 			else if(nowBunbo == 4096){ kaku4096++; }
-			else if(nowBunbo == 8192){ kaku8192++; }
+			else if(nowBunbo == 8192){ 
+				kaku8192++; 
+				jotai = "clear";			
+				game.popScene();
+				game.pushScene(clearScene);	//クリア！
+			}
 		}
 
 		//青ゲートボタンクリック処理
@@ -265,6 +273,9 @@ window.onload = function () {
 			game.popScene();
 			if(doko=="main"){
 				game.pushScene(mainScene);	
+			}
+			else if(doko=="clear"){
+				game.pushScene(clearScene);	
 			}else{
 				game.pushScene(endScene);
 			}
@@ -485,7 +496,123 @@ window.onload = function () {
 		seisekiEndBtn.ontouchend = function () {		
 			seisekiHyoji();
 		};
+	
+
+		//////8192到達画面////////////////////////////////////////////////////
+		const clearScene = new Scene();
+		clearScene.backgroundColor = "white";
+
+		//クリア画像
+		const clearBtn = new Sprite(209, 31);
+		clearBtn.moveTo(90, 150);
+		clearBtn.image = game.assets[clearImg];
+		clearScene.addChild(clearBtn);
+
+		//クリア画面用フォント設定
+		let clearFontColor = "black";
+
+		//確率テキスト
+		const kakuritsuTextClear = new Label(); 
+		kakuritsuTextClear.font = fontStyle;
+		kakuritsuTextClear.color = clearFontColor;
+		kakuritsuTextClear.width = 150;	
+		kakuritsuTextClear.moveTo(180, 200);	
+		clearScene.addChild(kakuritsuTextClear);
+
+		//最大到達分母テキスト
+		const maxBunboTextClear = new Label();	
+		maxBunboTextClear.font = fontStyle;
+		maxBunboTextClear.color = clearFontColor;
+		maxBunboTextClear.width = 150;	
+		maxBunboTextClear.moveTo(315, 55);
+		clearScene.addChild(maxBunboTextClear);	
+
+		//最大到達点テキスト
+		const toutatsuTextClear = new Label("最高到達点");	
+		toutatsuTextClear.font = fontStyle;
+		toutatsuTextClear.color = clearFontColor;
+		toutatsuTextClear.width = 150;	
+		toutatsuTextClear.moveTo(290, 30);
+		clearScene.addChild(toutatsuTextClear);
+
+		//試行回数テキスト
+		const countTextClear = new Label("試行回数");
+		countTextClear.font = fontStyle;
+		countTextClear.color = clearFontColor;
+		countTextClear.width = 150;
+		countTextClear.moveTo(20, 30);
+		clearScene.addChild(countTextClear);
+
+		//試行回数表示テキスト
+		const countNumTextClear = new Label(tryCount);
+		countNumTextClear.font = fontStyle;
+		countNumTextClear.color = clearFontColor;
+		countNumTextClear.width = 150;
+		countNumTextClear.moveTo(48, 55);
+		clearScene.addChild(countNumTextClear);
+
+		//履歴表示テキスト
+		const rirekiTextClear = new Label();	
+		rirekiTextClear.font = fontStyle;
+		rirekiTextClear.color = clearFontColor;
+		rirekiTextClear.width = 347;	
+		rirekiTextClear.moveTo(20, 365);
+		clearScene.addChild(rirekiTextClear);
+
+		//クリアテキスト
+		/*
+		const commentTextClear = new Label("最後まであきらめない心！");
+		commentTextClear.font = fontStyle;
+		commentTextClear.color = clearFontColor;
+		commentTextClear.width = 150;
+		commentTextClear.moveTo(20, 30);
+		clearScene.addChild(commentTextClear);
+		*/
+
+		//リトライボタン
+		const retryClearBtn = new Sprite(120, 60);
+		retryClearBtn.moveTo(50, 280);
+		retryClearBtn.image = game.assets[retryImg];
+		clearScene.addChild(retryClearBtn);
+
+		//リトライボタン処理
+		retryClearBtn.ontouchend = function () {		
+			nowBunbo = 1;
+			tryCount++;
+			countNumText.text = tryCount;
+			countNumTextClear.text = tryCount;
+			kakuritsuText.text = ""
+			jotai = "main";
+			game.popScene();
+			game.pushScene(mainScene);
+		};
+
+		//ポストボタン
+		const tweetClearBtn = new Sprite(120, 60);
+		tweetClearBtn.moveTo(230, 280);
+		tweetClearBtn.image = game.assets[tweetImg];
+		clearScene.addChild(tweetClearBtn);
+
+		//ポストボタン処理
+		tweetClearBtn.ontouchend = function () {	
+			//ツイッターＡＰＩに送信
+			const url = encodeURI("https://karisaito.github.io/garakuta/8192/");
+			window.open("http://twitter.com/intent/tweet?text=" +
+				"1/8192を達成した！！" + url); 
+		};
+
+		//成績ボタン（ゲームオーバー画面用）
+		const seisekiClearBtn = new Sprite(120, 42);
+		seisekiClearBtn.moveTo(140, 10);
+		seisekiClearBtn.image = game.assets[seisekiImg];
+		clearScene.addChild(seisekiClearBtn);
+
+		//成績ボタンクリック処理
+		seisekiClearBtn.ontouchend = function () {		
+			seisekiHyoji();
+		};
 		
+
 	};
 
 	game.start();
