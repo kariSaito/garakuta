@@ -81,11 +81,11 @@ window.onload = function () {
 		kakuritsuText.moveTo(180, 330);
 		mainScene.addChild(kakuritsuText);	
 
-		//履歴表示テキスト
+		//正解履歴表示テキスト
 		const rirekiText = new Label();	
 		rirekiText.font = fontStyle;
 		rirekiText.color = fontColor;
-		rirekiText.width = 347;	
+		rirekiText.width = 348;	
 		rirekiText.moveTo(20, 370);
 		mainScene.addChild(rirekiText);	
 
@@ -253,8 +253,8 @@ window.onload = function () {
 		}
 
 		//確率テキスト表示
-		let kakuX = 30;
-		let kakuY = 100;
+		let kakuX = 35;
+		let kakuY = 95;
 		let kakuFont = "24px Meiryo";
 		//1/2回数テキスト
 		const kaku2Text = new Label();	
