@@ -160,6 +160,7 @@ window.onload = function () {
 				nibuJidoCheck(true);
 				checkKakuritsu();
 			}
+			game.assets[clickSndUrl].clone().play();	//音を鳴らす
 		};
 
 		//自動試行用1/2チェック処理
@@ -628,7 +629,7 @@ window.onload = function () {
 		//ポストボタン処理
 		tweetBtn.ontouchend = function () {	
 			//ツイッターＡＰＩに送信
-			const url = encodeURI("https://karisaito.github.io/garakuta/enchant_js_8192/");
+			const url = encodeURI("https://karisaito.github.io/garakuta/8192_auto/");
 			window.open("http://twitter.com/intent/tweet?text=" +
 				"最高1/" + maxBunbo + "まで進んだ！※自動試行版" + url); 
 		};
