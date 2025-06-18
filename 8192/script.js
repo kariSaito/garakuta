@@ -48,15 +48,134 @@ window.onload = function () {
 	game.preload([clearImg]);	
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
-		let tryCount = 1;	//試行回数
-		let nowBunbo = 1; 	//現在の確率分母
-		let maxBunbo = 1;	//最高到達分母
-		let rireki = "";	//正解色履歴の文字列
-		let jotai = "main";	//現在の表示状態
+		let tryCount = 0;				//試行回数
+		let nowBunbo = 1; 				//現在の確率分母
+		let maxBunbo = 1;				//最高到達分母
+		let rireki = "";				//正解色履歴の文字列
+		let jotai = "main";				//現在の表示状態
+		let gatefadeOutSpeedMoto = 0.8; //ゲート用フェードアウトスピード初期値
+		let gatefadeOutSpeed = gatefadeOutSpeedMoto;	//確率が重くなるにつれて徐々に遅くなる
+
 
 		let fontStyle = "20px Meiryo";			 //フォント
 		let fontColor = 'rgba(255,255,255,1)';	//フォント色（RGB+透明度）
 
+		let blueGateFadeOut = 0;	//フェードアウト用フラグ
+		let greenGateFadeOut = 0;
+		let startBtnFadeOut = 0;
+		let clearFadeOut = 0;
+		let retryBtnFadeOut = 0;
+
+		let eight192FadeIn = 0;	//フェードイン用フラグ
+		let omedetoFadeIn1 = 0;
+		let omedetoFadeIn2 = 0;
+
+		//メインループ 各フラグを待機 ※1フレームごとに呼び出される/////////////////////////////////////
+		game.onenterframe = function(){
+
+			var fadeOutSpeed = 0.2;
+			if(startBtnFadeOut == 1){				//ボタンによってフラグが立ったら
+				startBtn.opacity -= fadeOutSpeed/4;	//不透明度を減らす
+				titleBtn.opacity -= fadeOutSpeed/4;
+				if(startBtn.opacity <= 0 ){			//完全に消えたら元に戻す+その後の動作を実行
+					startBtn.opacity = 1;
+					titleBtn.opacity = 1;
+					startBtnFadeOut = 0;
+					shokika();
+				}
+			}
+			if(blueGateFadeOut == 1){					
+				blueGateButton.opacity -= gatefadeOutSpeed;
+				if(blueGateButton.opacity < 0 ){
+					blueGateButton.opacity = 1;
+					blueGateFadeOut = 0;
+					nibuCheck(true);
+					checkKakuritsu();
+				}
+			}
+			if(greenGateFadeOut == 1){
+				greenGateButton.opacity -= gatefadeOutSpeed;
+				if(greenGateButton.opacity < 0 ){
+					greenGateButton.opacity = 1;
+					greenGateFadeOut = 0;
+					nibuCheck(true);
+					checkKakuritsu();
+				}
+			}
+			if(retryBtnFadeOut == 1){	//リトライ時はフェードしないことにした
+				retryBtn.opacity -= 1;
+				gameOverBtn.opacity -= 1;
+				tweetBtn.opacity -= 1;
+				kakuritsuTextEnd.opacity -= 1;
+				if(retryBtn.opacity < 0 ){
+					retryBtn.opacity = 1;
+					gameOverBtn.opacity = 1;
+					tweetBtn.opacity = 1;
+					kakuritsuTextEnd.opacity = 1;
+					retryBtnFadeOut = 0;
+					shokika();
+				}
+			}
+			if(eight192FadeIn == 1){	//フェードイン
+				clearBtn.opacity += fadeOutSpeed/15;
+				if(clearBtn.opacity >= 1 ){
+					clearBtn.opacity = 1;
+					eight192FadeIn = 0;
+					omedetoFadeIn1 = 1;
+				}
+			}
+			if(omedetoFadeIn1 == 1){	
+				maxBunboTextClear.opacity += fadeOutSpeed/22;
+				kakuritsuTextClear.opacity += fadeOutSpeed/22;
+				if(maxBunboTextClear.opacity >= 1 ){
+					maxBunboTextClear.opacity = 1;
+					kakuritsuTextClear.opacity = 1;
+					omedetoFadeIn1 = 0;
+					omedetoFadeIn2 = 1;
+				}
+			}
+			if(omedetoFadeIn2 == 1){	
+				commentTextClear.opacity += fadeOutSpeed/10;
+				retryClearBtn.opacity += fadeOutSpeed/5;
+				tweetClearBtn.opacity += fadeOutSpeed/5;
+				if(commentTextClear.opacity >= 1 ){
+					commentTextClear.opacity = 1;
+					retryClearBtn.opacity = 1;
+					tweetClearBtn.opacity = 1;
+					omedetoFadeIn2 = 0;
+				}
+			}
+			if(clearFadeOut == 1){
+				clearBtn.opacity -= fadeOutSpeed/8;
+				commentTextClear.opacity -= fadeOutSpeed/8;
+				kakuritsuTextClear.opacity -= fadeOutSpeed/8;
+				retryClearBtn.opacity -= fadeOutSpeed/8;
+				tweetClearBtn.opacity -= fadeOutSpeed/8;
+				if(clearBtn.opacity < 0 ){
+					clearBtn.opacity = 0;
+					commentTextClear.opacity = 0;
+					retryClearBtn.opacity = 0;
+					tweetClearBtn.opacity = 0;
+					kakuritsuTextClear.opacity = 0;
+					clearFadeOut = 0;
+					shokika();
+				}
+			}
+		}
+
+		//ゲーム開始状態に戻す
+		function shokika(){
+			nowBunbo = 1;
+			tryCount++;	
+			countNumText.text = tryCount;				//メイン画面の試行回数更新
+			countNumTextClear.text = tryCount;			//クリア画面の試行回数更新			
+			countNumTextEnd.text = tryCount;			//ゲームオーバー画面の試行回数更新
+			kakuritsuText.text = ""						//中央表示の確率を消去
+			gatefadeOutSpeed = gatefadeOutSpeedMoto;	//ゲートのフェードアウト速度を初期化
+			jotai = "main";								//ゲームの状態をメインに（成績表示の戻るボタン用）
+			game.popScene();							//現在のシーンを非表示に
+			game.pushScene(mainScene);					//メイン画面を表示
+		}
 
 		//////スタート画面/////////////////////////////////////////////////////
 		const startScene = new Scene();			//シーン作成
@@ -77,9 +196,7 @@ window.onload = function () {
 
 		//スタートボタン処理
 		startBtn.ontouchend = function () {		
-			nowBunbo = 1;
-			game.popScene();					//現在のシーンを非表示に
-			game.pushScene(mainScene);			//mainSceneシーンを表示する
+			startBtnFadeOut = 1;	//フェードアウト開始＋画面遷移
 		};
 
 
@@ -148,11 +265,13 @@ window.onload = function () {
 		mainScene.addChild(greenGateButton);
 
 		//ゲートボタン用1/2チェック処理
+		let sound = game.assets[clickSndUrl].clone();		//正解用の音を用意
 		function nibuCheck(iro){
 			var rand =  Math.floor(Math.random()*11);		//ランダム値抽選（0~10の整数）
 			if (rand % 2 == 1) {							//奇数だったら1/2成功とする
-				game.assets[clickSndUrl].clone().play();	//音を鳴らす
+				sound.play();								//音を鳴らす
 				nowBunbo = nowBunbo*2;						//表示用分母を2倍する
+				gatefadeOutSpeed = gatefadeOutSpeed/1.5		//ゲートのフェードアウト速度を遅くする
 				kakuritsuText.text = "1/" + nowBunbo;
 				iroAdd(iro);								//履歴に色を追加
 			} else {
@@ -211,20 +330,19 @@ window.onload = function () {
 				kaku8192++; 
 				jotai = "clear";			
 				game.popScene();
-				game.pushScene(clearScene);	//クリア！
+				game.pushScene(clearScene);	
+				eight192FadeIn = 1;
 			}
 		}
 
 		//青ゲートボタンクリック処理
-		blueGateButton.ontouchend = function () {						
-			nibuCheck(true);
-			checkKakuritsu();
+		blueGateButton.ontouchend = function () {	
+			blueGateFadeOut = 1;	//フェードアウト開始+1/2チェックフラグ
 		};
 
 		//緑ゲートボタンクリック処理（履歴の記載文字以外は青と同じ）
 		greenGateButton.ontouchend = function () {								
-			nibuCheck(false);
-			checkKakuritsu();
+			greenGateFadeOut = 1;
 		};
 
 		//成績表示ボタン
@@ -462,14 +580,7 @@ window.onload = function () {
 
 		//リトライボタン処理
 		retryBtn.ontouchend = function () {		
-			nowBunbo = 1;
-			tryCount++;
-			countNumText.text = tryCount;
-			countNumTextEnd.text = tryCount;
-			kakuritsuText.text = ""
-			jotai = "main";
-			game.popScene();
-			game.pushScene(mainScene);
+			retryBtnFadeOut = 1;
 		};
 
 		//ポストボタン
@@ -507,26 +618,28 @@ window.onload = function () {
 		clearBtn.moveTo(90, 150);
 		clearBtn.image = game.assets[clearImg];
 		clearScene.addChild(clearBtn);
+		clearBtn.opacity = 0;
 
 		//クリア画面用フォント設定
 		let clearFontColor = "black";
 
 		//確率テキスト
-		const kakuritsuTextClear = new Label(); 
+		const kakuritsuTextClear = new Label("1/8192"); 
 		kakuritsuTextClear.font = fontStyle;
-		kakuritsuTextClear.color = clearFontColor;
+		kakuritsuTextClear.color = "red";
 		kakuritsuTextClear.width = 150;	
-		kakuritsuTextClear.moveTo(180, 200);	
+		kakuritsuTextClear.moveTo(160, 200);	
 		clearScene.addChild(kakuritsuTextClear);
+		kakuritsuTextClear.opacity = 0;
 
 		//最大到達分母テキスト
-		const maxBunboTextClear = new Label();	
+		const maxBunboTextClear = new Label("1/8192");	
 		maxBunboTextClear.font = fontStyle;
 		maxBunboTextClear.color = "red";
 		maxBunboTextClear.width = 150;	
 		maxBunboTextClear.moveTo(305, 55);
 		clearScene.addChild(maxBunboTextClear);	
-		maxBunboTextClear.text ="1/8192"
+		maxBunboTextClear.opacity = 0;
 
 		//最大到達点テキスト
 		const toutatsuTextClear = new Label("最高到達点");	
@@ -567,23 +680,18 @@ window.onload = function () {
 		commentTextClear.width = 400;
 		commentTextClear.moveTo(75, 460);
 		clearScene.addChild(commentTextClear);
+		commentTextClear.opacity = 0;
 
 		//リトライボタン
 		const retryClearBtn = new Sprite(120, 60);
 		retryClearBtn.moveTo(50, 280);
 		retryClearBtn.image = game.assets[retryImg];
 		clearScene.addChild(retryClearBtn);
+		retryClearBtn.opacity = 0;
 
 		//リトライボタン処理
 		retryClearBtn.ontouchend = function () {		
-			nowBunbo = 1;
-			tryCount++;
-			countNumText.text = tryCount;
-			countNumTextClear.text = tryCount;
-			kakuritsuText.text = ""
-			jotai = "main";
-			game.popScene();
-			game.pushScene(mainScene);
+			clearFadeOut = 1;
 		};
 
 		//ポストボタン
@@ -591,6 +699,7 @@ window.onload = function () {
 		tweetClearBtn.moveTo(230, 280);
 		tweetClearBtn.image = game.assets[tweetImg];
 		clearScene.addChild(tweetClearBtn);
+		tweetClearBtn.opacity = 0;
 
 		//ポストボタン処理
 		tweetClearBtn.ontouchend = function () {	
