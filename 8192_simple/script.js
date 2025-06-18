@@ -96,7 +96,7 @@ window.onload = function () {
 		mainScene.addChild(countText);					//シーンに追加
 
 		//試行回数表示テキスト
-		const countNumText = new Label(tryCount,fontStyle,fontColor,150);
+		const countNumText = new Label();
 		countNumText.font = fontStyle;
 		countNumText.color = fontColor;	
 		countNumText.width = 150;
@@ -155,6 +155,7 @@ window.onload = function () {
 				nowBunbo = nowBunbo*2;						//表示用分母を2倍する
 				kakuritsuText.text = "1/" + nowBunbo;
 				iroAdd(iro);								//履歴に色を追加
+				checkKakuritsu();
 			} else {
 				iroAdd(!iro);								//フラグを反転させて逆の色を追加する
 				kakuritsuTextEnd.text = "1/"+nowBunbo;
@@ -218,13 +219,11 @@ window.onload = function () {
 		//青ゲートボタンクリック処理
 		blueGateButton.ontouchend = function () {						
 			nibuCheck(true);
-			checkKakuritsu();
 		};
 
 		//緑ゲートボタンクリック処理（履歴の記載文字以外は青と同じ）
 		greenGateButton.ontouchend = function () {								
 			nibuCheck(false);
-			checkKakuritsu();
 		};
 
 		//成績表示ボタン
