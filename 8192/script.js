@@ -1,5 +1,5 @@
 enchant();
-//
+
 window.onload = function () {
 	const game = new Game(400, 500);  	//画面サイズ
 
@@ -216,7 +216,7 @@ window.onload = function () {
 		}
 
 		//青ゲートボタンクリック処理
-		blueGateButton.ontouchend = function () {								
+		blueGateButton.ontouchend = function () {						
 			nibuCheck(true);
 			checkKakuritsu();
 		};
@@ -522,7 +522,7 @@ window.onload = function () {
 		//最大到達分母テキスト
 		const maxBunboTextClear = new Label();	
 		maxBunboTextClear.font = fontStyle;
-		maxBunboTextClear.color = clearFontColor;
+		maxBunboTextClear.color = "red";
 		maxBunboTextClear.width = 150;	
 		maxBunboTextClear.moveTo(305, 55);
 		clearScene.addChild(maxBunboTextClear);	
@@ -561,14 +561,12 @@ window.onload = function () {
 		clearScene.addChild(rirekiTextClear);
 
 		//クリアテキスト
-		/*
-		const commentTextClear = new Label("最後まであきらめない心！");
-		commentTextClear.font = fontStyle;
+		const commentTextClear = new Label("Thank you for playing \"until the end\".");
+		commentTextClear.font = "16px Cambria";
 		commentTextClear.color = clearFontColor;
-		commentTextClear.width = 150;
-		commentTextClear.moveTo(20, 30);
+		commentTextClear.width = 400;
+		commentTextClear.moveTo(75, 460);
 		clearScene.addChild(commentTextClear);
-		*/
 
 		//リトライボタン
 		const retryClearBtn = new Sprite(120, 60);
