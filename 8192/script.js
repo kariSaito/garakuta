@@ -47,6 +47,10 @@ window.onload = function () {
 	const clearImg = "img/clear.png";
 	game.preload([clearImg]);	
 
+	//再確認ボタン画像
+	const kakuninImg = "img/kakunin.png";
+	game.preload([kakuninImg]);	
+
 	game.onload = function () {	//ロード後にこの関数が呼び出される
 		let tryCount = 0;				//試行回数
 		let nowBunbo = 1; 				//現在の確率分母
@@ -159,6 +163,31 @@ window.onload = function () {
 					shokika();
 				}
 			}
+
+			//桁増加による表示位置調整
+			if(maxBunbo == 1024){
+				maxBunboText.moveTo(305, 55);
+				maxBunboTextEnd.moveTo(305, 55);
+			}
+			if(nowBunbo == 1024){
+				kakuritsuText.moveTo(158, 320);
+				kakuritsuTextEnd.moveTo(158, 200);
+			}
+			if(tryCount == 100){
+				countNumText.moveTo(41, 55);
+				countNumTextClear.moveTo(41, 55);
+				countNumTextEnd.moveTo(41, 55);
+			}
+			if(tryCount == 1000){
+				countNumText.moveTo(35, 55);
+				countNumTextClear.moveTo(35, 55);
+				countNumTextEnd.moveTo(35, 55);
+			}
+			if(tryCount == 10000){
+				countNumText.moveTo(29, 55);
+				countNumTextClear.moveTo(29, 55);
+				countNumTextEnd.moveTo(29, 55);
+			}
 		}
 
 		//ゲーム開始状態に戻す
@@ -170,6 +199,8 @@ window.onload = function () {
 			countNumTextEnd.text = tryCount;			//ゲームオーバー画面の試行回数更新
 			kakuritsuText.text = ""						//中央表示の確率を消去
 			gatefadeOutSpeed = gatefadeOutSpeedMoto;	//ゲートのフェードアウト速度を初期化
+			kakuritsuText.moveTo(183, 320);				//桁増加による表示位置調整をもとに戻す
+			kakuritsuTextEnd.moveTo(180, 200);			//
 			jotai = "main";								//ゲームの状態をメインに（成績表示の戻るボタン用）
 			game.popScene();							//現在のシーンを非表示に
 			game.pushScene(mainScene);					//メイン画面を表示
@@ -329,9 +360,10 @@ window.onload = function () {
 			else if(nowBunbo == 8192){ 
 				kaku8192++; 
 				jotai = "clear";			
+				rirekiTextEndUso.text = rireki;	//偽ゲームオーバー画面の準備
+				countNumTextEndUso.text = tryCount;
 				game.popScene();
-				game.pushScene(clearScene);	
-				eight192FadeIn = 1;
+				game.pushScene(endUsoScene);	
 			}
 		}
 
@@ -609,6 +641,90 @@ window.onload = function () {
 		};
 	
 
+		//////8192到達失敗？画面////////////////////////////////////////////////////
+		const endUsoScene = new Scene();
+		endUsoScene.backgroundColor = "black";
+
+		//GAMEOVER画像
+		const gameOverUsoBtn = new Sprite(209, 31);
+		gameOverUsoBtn.moveTo(90, 150);
+		gameOverUsoBtn.image = game.assets[gameoverImg];
+		endUsoScene.addChild(gameOverUsoBtn);
+
+		//確率テキスト
+		const kakuritsuTextEndUso= new Label(); 
+		kakuritsuTextEndUso.font = fontStyle;
+		kakuritsuTextEndUso.color = fontColor;
+		kakuritsuTextEndUso.width = 150;	
+		kakuritsuTextEndUso.moveTo(180, 200);	
+		endUsoScene.addChild(kakuritsuTextEndUso);
+
+		//最大到達分母テキスト
+		const maxBunboTextEndUso= new Label("1/4096?");	
+		maxBunboTextEndUso.font = fontStyle;
+		maxBunboTextEndUso.color = fontColor;
+		maxBunboTextEndUso.width = 150;	
+		maxBunboTextEndUso.moveTo(305, 55);
+		endUsoScene.addChild(maxBunboTextEndUso);	
+
+		//最大到達点テキスト
+		const toutatsuTextEndUso = new Label("最高到達点");	
+		toutatsuTextEndUso.font = fontStyle;
+		toutatsuTextEndUso.color = fontColor;
+		toutatsuTextEndUso.width = 150;	
+		toutatsuTextEndUso.moveTo(290, 30);
+		endUsoScene.addChild(toutatsuTextEndUso);
+
+		//試行回数テキスト
+		const countTextEndUso = new Label("試行回数");
+		countTextEndUso.font = fontStyle;
+		countTextEndUso.color = fontColor;
+		countTextEndUso.width = 150;
+		countTextEndUso.moveTo(20, 30);
+		endUsoScene.addChild(countTextEndUso);
+
+		//試行回数表示テキスト
+		const countNumTextEndUso = new Label();
+		countNumTextEndUso.font = fontStyle;
+		countNumTextEndUso.color = fontColor;
+		countNumTextEndUso.width = 150;
+		countNumTextEndUso.moveTo(48, 55);
+		endUsoScene.addChild(countNumTextEndUso);
+
+		//履歴表示テキスト
+		const rirekiTextEndUso = new Label();	
+		rirekiTextEndUso.font = fontStyle;
+		rirekiTextEndUso.color = fontColor;
+		rirekiTextEndUso.width = 347;	
+		rirekiTextEndUso.moveTo(20, 365);
+		endUsoScene.addChild(rirekiTextEndUso);
+
+		//再確認ボタン
+		const retryUsoBtn = new Sprite(120, 60);
+		retryUsoBtn.moveTo(50, 280);
+		retryUsoBtn.image = game.assets[kakuninImg];
+		endUsoScene.addChild(retryUsoBtn);
+
+		//再確認ボタン処理
+		retryUsoBtn.ontouchend = function () {		
+			game.popScene();
+			game.pushScene(clearScene);	//本当のクリア画面に遷移
+			eight192FadeIn = 1;	
+		};
+
+		//ポストボタン
+		const tweetUsoBtn = new Sprite(120, 60);
+		tweetUsoBtn.moveTo(230, 280);
+		tweetUsoBtn.image = game.assets[tweetImg];
+		endUsoScene.addChild(tweetUsoBtn);
+
+		//成績ボタン（ゲームオーバー画面用）
+		const seisekiEndUsoBtn = new Sprite(120, 42);
+		seisekiEndUsoBtn.moveTo(140, 10);
+		seisekiEndUsoBtn.image = game.assets[seisekiImg];
+		endUsoScene.addChild(seisekiEndUsoBtn);
+
+
 		//////8192到達画面////////////////////////////////////////////////////
 		const clearScene = new Scene();
 		clearScene.backgroundColor = "white";
@@ -625,10 +741,10 @@ window.onload = function () {
 
 		//確率テキスト
 		const kakuritsuTextClear = new Label("1/8192"); 
-		kakuritsuTextClear.font = fontStyle;
+		kakuritsuTextClear.font = "28px Meiryo";	;
 		kakuritsuTextClear.color = "red";
 		kakuritsuTextClear.width = 150;	
-		kakuritsuTextClear.moveTo(160, 200);	
+		kakuritsuTextClear.moveTo(145, 200);	
 		clearScene.addChild(kakuritsuTextClear);
 		kakuritsuTextClear.opacity = 0;
 
@@ -706,7 +822,7 @@ window.onload = function () {
 			//ツイッターＡＰＩに送信
 			const url = encodeURI("https://karisaito.github.io/garakuta/8192/");
 			window.open("http://twitter.com/intent/tweet?text=" +
-				"1/8192を達成した！！" + url); 
+				"1/8192を達成した！すごい！！" + url); 
 		};
 
 		//成績ボタン（ゲームオーバー画面用）
@@ -719,7 +835,6 @@ window.onload = function () {
 		seisekiClearBtn.ontouchend = function () {		
 			seisekiHyoji();
 		};
-		
 
 	};
 
