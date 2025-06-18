@@ -1,5 +1,5 @@
 enchant();
-//
+
 window.onload = function () {
 	const game = new Game(400, 500);  	//画面サイズ
 
@@ -98,7 +98,7 @@ window.onload = function () {
 				if(greenGateButton.opacity < 0 ){
 					greenGateButton.opacity = 1;
 					greenGateFadeOut = 0;
-					nibuCheck(true);
+					nibuCheck(false);
 					checkKakuritsu();
 				}
 			}
@@ -176,6 +176,7 @@ window.onload = function () {
 			game.popScene();							//現在のシーンを非表示に
 			game.pushScene(mainScene);					//メイン画面を表示
 		}
+
 
 		//////スタート画面/////////////////////////////////////////////////////
 		const startScene = new Scene();			//シーン作成
