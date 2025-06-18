@@ -90,7 +90,6 @@ window.onload = function () {
 					blueGateButton.opacity = 1;
 					blueGateFadeOut = 0;
 					nibuCheck(true);
-					checkKakuritsu();
 				}
 			}
 			if(greenGateFadeOut == 1){
@@ -99,7 +98,6 @@ window.onload = function () {
 					greenGateButton.opacity = 1;
 					greenGateFadeOut = 0;
 					nibuCheck(false);
-					checkKakuritsu();
 				}
 			}
 			if(retryBtnFadeOut == 1){	//リトライ時はフェードしないことにした
@@ -214,7 +212,7 @@ window.onload = function () {
 		mainScene.addChild(countText);					//シーンに追加
 
 		//試行回数表示テキスト
-		const countNumText = new Label(tryCount,fontStyle,fontColor,150);
+		const countNumText = new Label();
 		countNumText.font = fontStyle;
 		countNumText.color = fontColor;	
 		countNumText.width = 150;
@@ -275,6 +273,7 @@ window.onload = function () {
 				gatefadeOutSpeed = gatefadeOutSpeed/1.5		//ゲートのフェードアウト速度を遅くする
 				kakuritsuText.text = "1/" + nowBunbo;
 				iroAdd(iro);								//履歴に色を追加
+				checkKakuritsu();
 			} else {
 				iroAdd(!iro);								//フラグを反転させて逆の色を追加する
 				kakuritsuTextEnd.text = "1/"+nowBunbo;
