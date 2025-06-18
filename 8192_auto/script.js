@@ -1,5 +1,5 @@
 enchant();
-//
+
 window.onload = function () {
 	const game = new Game(400, 500);  	//画面サイズ
 
@@ -78,16 +78,16 @@ window.onload = function () {
 
 		//タイトル
 		const titleBtn = new Sprite(328, 103);
-		titleBtn.moveTo(40, 80);
+		titleBtn.moveTo(40, 60);
 		titleBtn.image = game.assets[titleImg];
 		startScene.addChild(titleBtn);
 
 		//自動試行テキスト
-		const kaisuHText = new Label("自動試行回数");		//テキストはLabelクラス
+		const kaisuHText = new Label("自動試行版");		//テキストはLabelクラス
 		kaisuHText.font = "26px 游明朝 Demibold";						//フォント設定
 		kaisuHText.color = fontColor;	   				//フォント色
 		kaisuHText.width = 180;							//横幅
-		kaisuHText.moveTo(125, 210);						//表示位置
+		kaisuHText.moveTo(135, 155);						//表示位置
 		startScene.addChild(kaisuHText);					//シーンに追加
 
 		//自動試行回数テキスト
@@ -97,6 +97,15 @@ window.onload = function () {
 		kaisuText.width = 150;
 		kaisuText.moveTo(175, 250);	
 		startScene.addChild(kaisuText);
+
+		//実行中テキスト
+		const jikkouText = new Label("※実行中※");
+		jikkouText.font = "28px 游明朝 Demibold";
+		jikkouText.color = fontColor;	
+		jikkouText.width = 150;
+		jikkouText.moveTo(130, 55);
+		startScene.addChild(jikkouText);
+		jikkouText.opacity = 0;
 
 		//+処理
 		function plusNkai(kai){
@@ -143,9 +152,9 @@ window.onload = function () {
 			plusNkai(100);
 		};
 
-		//スタートボタン
+		//開始ボタン
 		const startBtn = new Sprite(120, 60);
-		startBtn.moveTo(140, 380);
+		startBtn.moveTo(143, 380);
 		startBtn.image = game.assets[startImg];
 		startScene.addChild(startBtn);
 
@@ -154,12 +163,12 @@ window.onload = function () {
 		startBtn.ontouchend = function () {		
 			nowBunbo = 1;
 			rireki = "";
-			game.popScene();					//現在のシーンを非表示に
-			game.pushScene(mainScene);			//mainSceneシーンを表示する
 			for(nowKaisu=0; nowKaisu<kaisu; ){
 				nibuJidoCheck(true);
 				checkKakuritsu();
 			}
+			game.popScene();					//現在のシーンを非表示に
+			game.pushScene(mainScene);			//mainSceneシーンを表示する
 			game.assets[clickSndUrl].clone().play();	//音を鳴らす
 		};
 
@@ -188,6 +197,7 @@ window.onload = function () {
 			maxBunboText.text = "1/" + maxBunbo;
 		}
 
+
 		//////メイン画面////////////////////////////////////////////////////
 		const mainScene = new Scene();
 		mainScene.backgroundColor = "black"; 
@@ -201,7 +211,7 @@ window.onload = function () {
 		mainScene.addChild(countText);					//シーンに追加
 
 		//試行回数表示テキスト
-		const countNumText = new Label(tryCount,fontStyle,fontColor,150);
+		const countNumText = new Label();
 		countNumText.font = fontStyle;
 		countNumText.color = fontColor;	
 		countNumText.width = 150;
