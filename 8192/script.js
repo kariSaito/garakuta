@@ -1,55 +1,38 @@
 enchant();
 
 window.onload = function () {
-	const game = new Game(400, 500);  	//画面サイズ
+	
+	//画面サイズ
+	const game = new Game(400, 500);  	
 
-	//クリック音
-	const clickSndUrl = "sound/click.wav";	//game.htmlからの相対パス
-	game.preload([clickSndUrl]); 			//データを読み込む
+	//ファイルパスの定義
+	const clickSndUrl = "sound/click.wav";	//クリック音
+	const titleImg = "img/8192.png";		//タイトル画像
+	const startImg = "img/start.png";		//開始ボタン画像
+	const retryImg = "img/retry.png";		//リトライボタン画像
+	const tweetImg = "img/tweet.png";		//ツイートボタン画像
+	const gameoverImg = "img/gameover.png";	//ゲームオーバー画像
+	const blueGateImg = "img/blue.png";		//青色ゲート画像
+	const greenGateImg = "img/green.png";	//緑色ゲート画像
+	const seisekiImg = "img/seiseki.png";	//成績表示ボタン画像
+	const modoruImg = "img/modoru.png";		//戻るボタン画像
+	const clearImg = "img/clear.png";		//クリア画像
+	const kakuninImg = "img/kakunin.png";	//再確認ボタン画像
 
-	//タイトル画像
-	const titleImg = "img/8192.png";
+	//ファイルをロードする
+	game.preload([clickSndUrl]); 
 	game.preload([titleImg]);
-	
-	//開始ボタン画像
-	const startImg = "img/start.png";
 	game.preload([startImg]);
-	
-	//リトライボタン画像
-	const retryImg = "img/retry.png";
 	game.preload([retryImg]);
-
-	//ツイートボタン画像
-	const tweetImg = "img/tweet.png";
-	game.preload([tweetImg]);	
-
-	//ゲームオーバー画像
-	const gameoverImg = "img/gameover.png";
+	game.preload([tweetImg]);
 	game.preload([gameoverImg]);	
-
-	//青色ゲート画像
-	const blueGateImg = "img/blue.png";
-	game.preload([blueGateImg]);	
-
-	//緑色ゲート画像
-	const greenGateImg = "img/green.png";
+	game.preload([blueGateImg]);
 	game.preload([greenGateImg]);	
-
-	//成績表示ボタン画像
-	const seisekiImg = "img/seiseki.png";
 	game.preload([seisekiImg]);	
-
-	//戻るボタン画像
-	const modoruImg = "img/modoru.png";
 	game.preload([modoruImg]);	
-
-	//クリア画像
-	const clearImg = "img/clear.png";
-	game.preload([clearImg]);	
-
-	//再確認ボタン画像
-	const kakuninImg = "img/kakunin.png";
+	game.preload([clearImg]);
 	game.preload([kakuninImg]);	
+
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
 		let tryCount = 0;				//試行回数
