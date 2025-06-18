@@ -1,63 +1,42 @@
 enchant();
 
 window.onload = function () {
-	const game = new Game(400, 500);  	//画面サイズ
 
-	//クリック音
-	const clickSndUrl = "sound/click.wav";	//game.htmlからの相対パス
-	game.preload([clickSndUrl]); 			//データを読み込む
+	//画面サイズ
+	const game = new Game(400, 500);
 
-	//タイトル画像
-	const titleImg = "img/8192.png";
+	//ファイルパスの定義
+	const clickSndUrl = "sound/click.wav";	//クリック音
+	const titleImg = "img/8192.png";		//タイトル画像
+	const startImg = "img/start.png";		//開始ボタン画像
+	const retryImg = "img/retry.png";		//リトライボタン画像
+	const tweetImg = "img/tweet.png";		//ツイートボタン画像
+	const gameoverImg = "img/gameover.png";	//ゲームオーバー画像
+	const blueGateImg = "img/blue.png";		//青色ゲート画像
+	const greenGateImg = "img/green.png";	//緑色ゲート画像
+	const seisekiImg = "img/seiseki.png";	//成績表示ボタン画像
+	const modoruImg = "img/modoru.png";		//戻るボタン画像
+	const plus1Img = "img/plus1.png";		//+1ボタン画像
+	const plus10Img = "img/plus10.png";		//+10ボタン画像
+	const plus100Img = "img/plus100.png";	//+100ボタン画像
+	const kaisiGImg = "img/kaisiG.png";		//開始画面ボタン画像
+
+	//ファイルをロードする
+	game.preload([clickSndUrl]); 
 	game.preload([titleImg]);
-	
-	//開始ボタン画像
-	const startImg = "img/start.png";
 	game.preload([startImg]);
-	
-	//リトライボタン画像
-	const retryImg = "img/retry.png";
 	game.preload([retryImg]);
-
-	//ツイートボタン画像
-	const tweetImg = "img/tweet.png";
-	game.preload([tweetImg]);	
-
-	//ゲームオーバー画像
-	const gameoverImg = "img/gameover.png";
+	game.preload([tweetImg]);
 	game.preload([gameoverImg]);	
-
-	//青色ゲート画像
-	const blueGateImg = "img/blue.png";
-	game.preload([blueGateImg]);	
-
-	//緑色ゲート画像
-	const greenGateImg = "img/green.png";
+	game.preload([blueGateImg]);
 	game.preload([greenGateImg]);	
-
-	//成績表示ボタン画像
-	const seisekiImg = "img/seiseki.png";
 	game.preload([seisekiImg]);	
-
-	//戻るボタン画像
-	const modoruImg = "img/modoru.png";
 	game.preload([modoruImg]);	
-
-	//+1ボタン画像
-	const plus1Img = "img/plus1.png";
 	game.preload([plus1Img]);
-
-	//+10ボタン画像
-	const plus10Img = "img/plus10.png";
 	game.preload([plus10Img]);	
-
-	//+100ボタン画像
-	const plus100Img = "img/plus100.png";
 	game.preload([plus100Img]);	
-
-	//開始画面ボタン画像
-	const kaisiGImg = "img/kaisiG.png";
 	game.preload([kaisiGImg]);	
+
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
 		let tryCount = 1;	//試行回数
