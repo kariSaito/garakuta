@@ -18,10 +18,13 @@ window.onload = function () {
 	const modoruImg = "img/modoru.png";		//戻るボタン画像
 	const clearImg = "img/clear.png";		//クリア画像
 	const kakuninImg = "img/kakunin.png";	//再確認ボタン画像
+	const end8192Img = "img/end8192.png";	//クリア画面の8192表示画像
+	const thanksClearImg = "img/thanksClear.png"	//クリア画面のメッセージ画像
 
 	//ファイルをロードする
 	game.preload([clickSndUrl]); 
 	game.preload([titleImg]);
+	game.preload([startImg]);
 	game.preload([startImg]);
 	game.preload([retryImg]);
 	game.preload([tweetImg]);
@@ -32,6 +35,8 @@ window.onload = function () {
 	game.preload([modoruImg]);	
 	game.preload([clearImg]);
 	game.preload([kakuninImg]);	
+	game.preload([end8192Img]);	
+	game.preload([thanksClearImg]);	
 
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
@@ -42,7 +47,6 @@ window.onload = function () {
 		let jotai = "main";				//現在の表示状態
 		let gatefadeOutSpeedMoto = 0.8; //ゲート用フェードアウトスピード初期値
 		let gatefadeOutSpeed = gatefadeOutSpeedMoto;	//確率が重くなるにつれて徐々に遅くなる
-
 
 		let fontStyle = "20px Meiryo";			 //フォント
 		let fontColor = 'rgba(255,255,255,1)';	//フォント色（RGB+透明度）
@@ -57,6 +61,7 @@ window.onload = function () {
 		let omedetoFadeIn1 = 0;
 		let omedetoFadeIn2 = 0;
 
+
 		//メインループ 各フラグを待機 ※1フレームごとに呼び出される/////////////////////////////////////
 		game.onenterframe = function(){
 
@@ -69,6 +74,7 @@ window.onload = function () {
 					titleBtn.opacity = 1;
 					startBtnFadeOut = 0;
 					shokika();
+					//nowBunbo = 4096;	//デバッグ用
 				}
 			}
 			if(blueGateFadeOut == 1){					
@@ -101,47 +107,47 @@ window.onload = function () {
 					shokika();
 				}
 			}
-			if(eight192FadeIn == 1){	//フェードイン
+			if(eight192FadeIn == 1){	//クリア時のフェードイン
 				clearBtn.opacity += fadeOutSpeed/15;
 				if(clearBtn.opacity >= 1 ){
 					clearBtn.opacity = 1;
 					eight192FadeIn = 0;
-					omedetoFadeIn1 = 1;
+					omedetoFadeIn1 = 1;	//次のフェードインへ
 				}
 			}
 			if(omedetoFadeIn1 == 1){	
 				maxBunboTextClear.opacity += fadeOutSpeed/22;
-				kakuritsuTextClear.opacity += fadeOutSpeed/22;
+				kakuritsuBtn.opacity += fadeOutSpeed/22;
 				if(maxBunboTextClear.opacity >= 1 ){
 					maxBunboTextClear.opacity = 1;
-					kakuritsuTextClear.opacity = 1;
+					kakuritsuBtn.opacity = 1;
 					omedetoFadeIn1 = 0;
 					omedetoFadeIn2 = 1;
 				}
 			}
 			if(omedetoFadeIn2 == 1){	
-				commentTextClear.opacity += fadeOutSpeed/10;
+				commentClearBtn.opacity += fadeOutSpeed/10;
 				retryClearBtn.opacity += fadeOutSpeed/5;
 				tweetClearBtn.opacity += fadeOutSpeed/5;
-				if(commentTextClear.opacity >= 1 ){
+				if(commentClearBtn.opacity >= 1 ){
 					commentTextClear.opacity = 1;
 					retryClearBtn.opacity = 1;
 					tweetClearBtn.opacity = 1;
 					omedetoFadeIn2 = 0;
 				}
 			}
-			if(clearFadeOut == 1){
+			if(clearFadeOut == 1){		//クリア画面からメイン画面へ
 				clearBtn.opacity -= fadeOutSpeed/8;
-				commentTextClear.opacity -= fadeOutSpeed/8;
-				kakuritsuTextClear.opacity -= fadeOutSpeed/8;
+				commentClearBtn.opacity -= fadeOutSpeed/8;
+				kakuritsuBtn.opacity -= fadeOutSpeed/8;
 				retryClearBtn.opacity -= fadeOutSpeed/8;
 				tweetClearBtn.opacity -= fadeOutSpeed/8;
 				if(clearBtn.opacity < 0 ){
 					clearBtn.opacity = 0;
-					commentTextClear.opacity = 0;
+					commentClearBtn.opacity = 0;
 					retryClearBtn.opacity = 0;
 					tweetClearBtn.opacity = 0;
-					kakuritsuTextClear.opacity = 0;
+					kakuritsuBtn.opacity = 0;
 					clearFadeOut = 0;
 					shokika();
 				}
@@ -152,9 +158,13 @@ window.onload = function () {
 				maxBunboText.moveTo(305, 55);
 				maxBunboTextEnd.moveTo(305, 55);
 			}
+			if(nowBunbo == 128){
+				kakuritsuText.moveTo(169, 320);
+				kakuritsuTextEnd.moveTo(169, 200);
+			}
 			if(nowBunbo == 1024){
-				kakuritsuText.moveTo(158, 320);
-				kakuritsuTextEnd.moveTo(158, 200);
+				kakuritsuText.moveTo(166, 320);
+				kakuritsuTextEnd.moveTo(166, 200);
 			}
 			if(tryCount == 100){
 				countNumText.moveTo(41, 55);
@@ -193,7 +203,7 @@ window.onload = function () {
 		//////スタート画面/////////////////////////////////////////////////////
 		const startScene = new Scene();			//シーン作成
 		startScene.backgroundColor = "black";	//シーンの背景色
-		game.pushScene(startScene);  			//startSceneシーンを表示する
+		game.pushScene(startScene);  			//startSceneシーンを表示する ※ここが初期表示
 
 		//タイトル
 		const titleBtn = new Sprite(328, 103);
@@ -269,7 +279,7 @@ window.onload = function () {
 		const blueGateButton = new Sprite(117, 166);		//ボタンサイズ
 		blueGateButton.moveTo(65, 135);						//ボタンの位置
 		blueGateButton.image = game.assets[blueGateImg];	//ボタンに表示する画像
-		mainScene.addChild(blueGateButton);					//シーンにボタンを追加  
+		mainScene.addChild(blueGateButton);	
 		
 		//緑ゲートボタン
 		const greenGateButton = new Sprite(117, 166);
@@ -290,7 +300,7 @@ window.onload = function () {
 				checkKakuritsu();
 			} else {
 				iroAdd(!iro);								//フラグを反転させて逆の色を追加する
-				kakuritsuTextEnd.text = "1/"+nowBunbo;
+				kakuritsuTextEnd.text = "1/"+nowBunbo;		//ゲームオーバー画面の表示準備
 				rirekiTextEnd.text = rireki;
 				jotai = "gameover";			
 				game.popScene();
@@ -340,7 +350,7 @@ window.onload = function () {
 			else if(nowBunbo == 1024){ kaku1024++; }
 			else if(nowBunbo == 2048){ kaku2048++; }
 			else if(nowBunbo == 4096){ kaku4096++; }
-			else if(nowBunbo == 8192){ 
+			else if(nowBunbo == 8192){ 	//1/8192の場合はゲームクリア処理も行う
 				kaku8192++; 
 				jotai = "clear";			
 				rirekiTextEndUso.text = rireki;	//偽ゲームオーバー画面の準備
@@ -352,7 +362,7 @@ window.onload = function () {
 
 		//青ゲートボタンクリック処理
 		blueGateButton.ontouchend = function () {	
-			blueGateFadeOut = 1;	//フェードアウト開始+1/2チェックフラグ
+			blueGateFadeOut = 1;	//フェードアウト開始+1/2チェックフラグ 処理はメインループに記載
 		};
 
 		//緑ゲートボタンクリック処理（履歴の記載文字以外は青と同じ）
@@ -643,7 +653,7 @@ window.onload = function () {
 		endUsoScene.addChild(kakuritsuTextEndUso);
 
 		//最大到達分母テキスト
-		const maxBunboTextEndUso= new Label("1/4096?");	
+		const maxBunboTextEndUso= new Label("1/4096↑");	
 		maxBunboTextEndUso.font = fontStyle;
 		maxBunboTextEndUso.color = fontColor;
 		maxBunboTextEndUso.width = 150;	
@@ -695,13 +705,13 @@ window.onload = function () {
 			eight192FadeIn = 1;	
 		};
 
-		//ポストボタン
+		//ポストボタン（クリックしても処理は行わない）
 		const tweetUsoBtn = new Sprite(120, 60);
 		tweetUsoBtn.moveTo(230, 280);
 		tweetUsoBtn.image = game.assets[tweetImg];
 		endUsoScene.addChild(tweetUsoBtn);
 
-		//成績ボタン（ゲームオーバー画面用）
+		//成績ボタン（クリックしても処理は行わない）
 		const seisekiEndUsoBtn = new Sprite(120, 42);
 		seisekiEndUsoBtn.moveTo(140, 10);
 		seisekiEndUsoBtn.image = game.assets[seisekiImg];
@@ -714,7 +724,7 @@ window.onload = function () {
 
 		//クリア画像
 		const clearBtn = new Sprite(209, 31);
-		clearBtn.moveTo(90, 150);
+		clearBtn.moveTo(92, 150);
 		clearBtn.image = game.assets[clearImg];
 		clearScene.addChild(clearBtn);
 		clearBtn.opacity = 0;
@@ -722,14 +732,12 @@ window.onload = function () {
 		//クリア画面用フォント設定
 		let clearFontColor = "black";
 
-		//確率テキスト
-		const kakuritsuTextClear = new Label("1/8192"); 
-		kakuritsuTextClear.font = "28px Meiryo";	;
-		kakuritsuTextClear.color = "red";
-		kakuritsuTextClear.width = 150;	
-		kakuritsuTextClear.moveTo(145, 200);	
-		clearScene.addChild(kakuritsuTextClear);
-		kakuritsuTextClear.opacity = 0;
+		//8192表示
+		const kakuritsuBtn = new Sprite(140, 53);
+		kakuritsuBtn.moveTo(132, 190);	
+		kakuritsuBtn.image = game.assets[end8192Img];
+		clearScene.addChild(kakuritsuBtn);
+		kakuritsuBtn.opacity = 0;
 
 		//最大到達分母テキスト
 		const maxBunboTextClear = new Label("1/8192");	
@@ -773,13 +781,12 @@ window.onload = function () {
 		clearScene.addChild(rirekiTextClear);
 
 		//クリアテキスト
-		const commentTextClear = new Label("Thank you for playing \"until the end\".");
-		commentTextClear.font = "16px Cambria";
-		commentTextClear.color = clearFontColor;
-		commentTextClear.width = 400;
-		commentTextClear.moveTo(75, 460);
-		clearScene.addChild(commentTextClear);
-		commentTextClear.opacity = 0;
+		//クリアテキスト
+		const commentClearBtn = new Sprite(355, 44);
+		commentClearBtn.image = game.assets[thanksClearImg];
+		commentClearBtn.moveTo(25, 460);
+		clearScene.addChild(commentClearBtn);
+		commentClearBtn.opacity = 0;
 
 		//リトライボタン
 		const retryClearBtn = new Sprite(120, 60);
