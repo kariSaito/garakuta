@@ -818,7 +818,7 @@ window.onload = function () {
 			//ツイッターＡＰＩに送信
 			const url = encodeURI("https://karisaito.github.io/garakuta/8192/");
 			window.open("http://twitter.com/intent/tweet?text=" +
-				"1/8192を達成した！すごい！！" + url); 
+				"1/8192を達成したエルマさん！" + url); 
 		};
 
 		//成績ボタン（ゲームオーバー画面用）
