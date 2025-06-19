@@ -20,6 +20,7 @@ window.onload = function () {
 	const plus10Img = "img/plus10.png";		//+10ボタン画像
 	const plus100Img = "img/plus100.png";	//+100ボタン画像
 	const kaisiGImg = "img/kaisiG.png";		//開始画面ボタン画像
+	const hukudaiAutoImg = "img/hukudaiAuto.png";		//副題画像
 
 	//ファイルをロードする
 	game.preload([clickSndUrl]); 
@@ -36,6 +37,7 @@ window.onload = function () {
 	game.preload([plus10Img]);	
 	game.preload([plus100Img]);	
 	game.preload([kaisiGImg]);	
+	game.preload([hukudaiAutoImg]);	
 
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
@@ -61,13 +63,11 @@ window.onload = function () {
 		titleBtn.image = game.assets[titleImg];
 		startScene.addChild(titleBtn);
 
-		//自動試行テキスト
-		const kaisuHText = new Label("自動試行版");		//テキストはLabelクラス
-		kaisuHText.font = "26px 游明朝 Demibold";						//フォント設定
-		kaisuHText.color = fontColor;	   				//フォント色
-		kaisuHText.width = 180;							//横幅
-		kaisuHText.moveTo(135, 155);						//表示位置
-		startScene.addChild(kaisuHText);					//シーンに追加
+		//副題
+		const hukudaiBtn = new Sprite(110, 31);
+		hukudaiBtn.moveTo(145, 155);
+		hukudaiBtn.image = game.assets[hukudaiAutoImg];
+		startScene.addChild(hukudaiBtn);
 
 		//自動試行回数テキスト
 		const kaisuText = new Label(0);	
