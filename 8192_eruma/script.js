@@ -18,6 +18,9 @@ window.onload = function () {
 	const modoruImg = "img/modoru.png";		//戻るボタン画像
 	const clearImg = "img/clear.png";		//クリア画像
 	const kakuninImg = "img/kakunin.png";	//再確認ボタン画像
+	const end8192Img = "img/end8192.png";	//クリア画面の8192表示画像
+	const thanksErumaImg = "img/thanksEruma.png"	//クリア画面のメッセージ画像
+	const erumaTitleImg = "img/erumaEdit.png"	//副題画像
 
 	//ファイルをロードする
 	game.preload([clickSndUrl]); 
@@ -33,6 +36,9 @@ window.onload = function () {
 	game.preload([modoruImg]);	
 	game.preload([clearImg]);
 	game.preload([kakuninImg]);	
+	game.preload([end8192Img]);	
+	game.preload([thanksErumaImg]);	
+	game.preload([erumaTitleImg]);	
 
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
@@ -112,20 +118,20 @@ window.onload = function () {
 			}
 			if(omedetoFadeIn1 == 1){	
 				maxBunboTextClear.opacity += fadeOutSpeed/22;
-				kakuritsuTextClear.opacity += fadeOutSpeed/22;
+				kakuritsuBtn.opacity += fadeOutSpeed/22;
 				if(maxBunboTextClear.opacity >= 1 ){
 					maxBunboTextClear.opacity = 1;
-					kakuritsuTextClear.opacity = 1;
+					kakuritsuBtn.opacity = 1;
 					omedetoFadeIn1 = 0;
 					omedetoFadeIn2 = 1;
 				}
 			}
 			if(omedetoFadeIn2 == 1){	
-				commentTextClear.opacity += fadeOutSpeed/10;
+				commentClearBtn.opacity += fadeOutSpeed/10;
 				retryClearBtn.opacity += fadeOutSpeed/5;
 				tweetClearBtn.opacity += fadeOutSpeed/5;
-				if(commentTextClear.opacity >= 1 ){
-					commentTextClear.opacity = 1;
+				if(commentClearBtn.opacity >= 1 ){
+					commentClearBtn.opacity = 1;
 					retryClearBtn.opacity = 1;
 					tweetClearBtn.opacity = 1;
 					omedetoFadeIn2 = 0;
@@ -133,16 +139,16 @@ window.onload = function () {
 			}
 			if(clearFadeOut == 1){		//クリア画面からメイン画面へ
 				clearBtn.opacity -= fadeOutSpeed/8;
-				commentTextClear.opacity -= fadeOutSpeed/8;
-				kakuritsuTextClear.opacity -= fadeOutSpeed/8;
+				commentClearBtn.opacity -= fadeOutSpeed/8;
+				kakuritsuBtn.opacity -= fadeOutSpeed/8;
 				retryClearBtn.opacity -= fadeOutSpeed/8;
 				tweetClearBtn.opacity -= fadeOutSpeed/8;
 				if(clearBtn.opacity < 0 ){
 					clearBtn.opacity = 0;
-					commentTextClear.opacity = 0;
+					commentClearBtn.opacity = 0;
 					retryClearBtn.opacity = 0;
 					tweetClearBtn.opacity = 0;
-					kakuritsuTextClear.opacity = 0;
+					kakuritsuBtn.opacity = 0;
 					clearFadeOut = 0;
 					shokika();
 				}
@@ -207,12 +213,10 @@ window.onload = function () {
 		startScene.addChild(titleBtn);
 
 		//副題 エルマ
-		const hukudaiText = new Label("Eruma's edition");
-		hukudaiText.font = "18px Cambria";
-		hukudaiText.color = fontColor;	
-		hukudaiText.width = 150;
-		hukudaiText.moveTo(137, 210);
-		startScene.addChild(hukudaiText);
+		const hukudaiBtn = new Sprite(210, 41);
+		hukudaiBtn.moveTo(97, 195);
+		hukudaiBtn.image = game.assets[erumaTitleImg];
+		startScene.addChild(hukudaiBtn);
 
 		//スタートボタン
 		const startBtn = new Sprite(120, 60);
@@ -726,8 +730,8 @@ window.onload = function () {
 		clearScene.backgroundColor = "white";
 
 		//クリア画像
-		const clearBtn = new Sprite(209, 31);
-		clearBtn.moveTo(90, 150);
+		const clearBtn = new Sprite(212, 31);
+		clearBtn.moveTo(92, 150);
 		clearBtn.image = game.assets[clearImg];
 		clearScene.addChild(clearBtn);
 		clearBtn.opacity = 0;
@@ -735,14 +739,12 @@ window.onload = function () {
 		//クリア画面用フォント設定
 		let clearFontColor = "black";
 
-		//確率テキスト
-		const kakuritsuTextClear = new Label("1/8192"); 
-		kakuritsuTextClear.font = "28px Meiryo";	;
-		kakuritsuTextClear.color = "red";
-		kakuritsuTextClear.width = 150;	
-		kakuritsuTextClear.moveTo(145, 200);	
-		clearScene.addChild(kakuritsuTextClear);
-		kakuritsuTextClear.opacity = 0;
+		//8192表示
+		const kakuritsuBtn = new Sprite(140, 53);
+		kakuritsuBtn.moveTo(132, 190);	
+		kakuritsuBtn.image = game.assets[end8192Img];
+		clearScene.addChild(kakuritsuBtn);
+		kakuritsuBtn.opacity = 0;
 
 		//最大到達分母テキスト
 		const maxBunboTextClear = new Label("1/8192");	
@@ -786,13 +788,11 @@ window.onload = function () {
 		clearScene.addChild(rirekiTextClear);
 
 		//クリアテキスト
-		const commentTextClear = new Label("Thank you for playing \"Eruma Ichinose\".");
-		commentTextClear.font = "16px Cambria";
-		commentTextClear.color = clearFontColor;
-		commentTextClear.width = 400;
-		commentTextClear.moveTo(70, 460);
-		clearScene.addChild(commentTextClear);
-		commentTextClear.opacity = 0;
+		const commentClearBtn = new Sprite(355, 44);
+		commentClearBtn.image = game.assets[thanksErumaImg];
+		commentClearBtn.moveTo(25, 460);
+		clearScene.addChild(commentClearBtn);
+		commentClearBtn.opacity = 0;
 
 		//リトライボタン
 		const retryClearBtn = new Sprite(120, 60);
