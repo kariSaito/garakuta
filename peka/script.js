@@ -17,6 +17,10 @@ window.onload = function () {
 	const plus100Img = "img/plus100.png";	//+100ボタン画像
 	const kaisiGImg = "img/kaisiG.png";		//開始画面ボタン画像
 	const shokyoImg = "img/shokyo.png";		//消去ボタン画像
+	const uchidomeImg = "img/uchidome.png";	//打ち止めボタン画像
+	const uchidomeChuImg = "img/uchichu.png";//打ち止め中メッセージ画像
+	const kaijoBtnImg = "img/kaijo.png";		//解除ボタン画像
+	const kaijoMsgImg = "img/kaijomes.png";		//解除メッセージ画像
 
 	//ファイルをロードする
 	game.preload([titleImg]);
@@ -30,6 +34,10 @@ window.onload = function () {
 	game.preload([plus100Img]);	
 	game.preload([kaisiGImg]);	
 	game.preload([shokyoImg]);	
+	game.preload([uchidomeImg]);	
+	game.preload([uchidomeChuImg]);	
+	game.preload([kaijoBtnImg]);	
+	game.preload([kaijoMsgImg]);	
 
 	game.onload = function () {	//ロード後にこの関数が呼び出される
 		let tryCount = 0;				//試行回数
@@ -41,6 +49,8 @@ window.onload = function () {
 
 		let startBtnFadeOut = 0;		//フェードアウト用フラグ
 		let fadeOutSpeed = 0.2;			//フェードアウト速度
+
+		let uchiFlg = 0 //打ち止めフラグ
 
 
 		//メインループ 各フラグを待機 ※1フレームごとに呼び出される/////////////////////////////////////
@@ -81,6 +91,16 @@ window.onload = function () {
 			pekariNumText.moveTo(327, 55);
 			game.popScene();
 			game.pushScene(mainScene);
+			
+			//打ち止め関係を初期化
+			kaijoBtn.moveTo(0,0);
+			uchidomeBtn.moveTo(140, 43);
+			uchidomeBtn.opacity = 1;
+			kaijoBtn.opacity = 0;
+			uchiFlg = 0;
+			kaijoMsgBtn.opacity = 0;
+			uchichuMsgBtn.opacity = 0;
+
 		}
 
 
@@ -242,7 +262,9 @@ window.onload = function () {
 		mainScene.addChild(stopButton);
 		//リール停止ボタンクリック処理
 		stopButton.ontouchend = function () {	
-			pekaCheck();
+			if(uchiFlg != 2){	//打ち止め当選状態だったら何もしない
+				pekaCheck();
+			}
 			if(tryCount >= 10){	//桁数による表示位置補正（回転数）
 				countNumText.moveTo(53, 55);
 			}			
@@ -282,6 +304,10 @@ window.onload = function () {
 				pekaCount++;
 				pekariNumText.text = pekaCount;
 				gogoButton.image = game.assets[gogoOnImg];	
+				if(uchiFlg == 1){
+					kaijoMsgBtn.opacity = 1;	//打ち止めモードだったら解除メッセージ表示
+					uchiFlg = 2;	//打ち止め当選状態
+				}
 			} else {
 				gogoButton.image = game.assets[gogoOffImg];	
 			}
@@ -289,13 +315,61 @@ window.onload = function () {
 
 		//開始画面ボタン
 		const kaisiGBtn = new Sprite(120, 42);
-		kaisiGBtn.moveTo(140, 22);
+		kaisiGBtn.moveTo(140, 2);
 		kaisiGBtn.image = game.assets[kaisiGImg];
 		mainScene.addChild(kaisiGBtn);
 		//開始画面ボタンクリック処理
 		kaisiGBtn.ontouchend = function(){
 			game.popScene();
 			game.pushScene(startScene);	
+		}
+
+		//打ち止め中メッセージ
+		const uchichuMsgBtn = new Sprite(181, 31);
+		uchichuMsgBtn.moveTo(105, 425);		
+		uchichuMsgBtn.image = game.assets[uchidomeChuImg];	
+		mainScene.addChild(uchichuMsgBtn);	
+		uchichuMsgBtn.opacity = 0;
+
+		//打ち止め解除メッセージ
+		const kaijoMsgBtn = new Sprite(266, 31);
+		kaijoMsgBtn.moveTo(73, 330);		
+		kaijoMsgBtn.image = game.assets[kaijoMsgImg];	
+		mainScene.addChild(kaijoMsgBtn);	
+		kaijoMsgBtn.opacity = 0;
+
+		//解除ボタン
+		const kaijoBtn = new Sprite(120, 42);
+		kaijoBtn.moveTo(0, 0);
+		kaijoBtn.image = game.assets[kaijoBtnImg];
+		mainScene.addChild(kaijoBtn);
+		kaijoBtn.opacity = 0;
+		//解除ボタンクリック処理
+		kaijoBtn.ontouchend = function(){
+			uchiFlg = 0; 
+			uchichuMsgBtn.opacity = 0;	//打ち止め中メッセージを消去
+			kaijoMsgBtn.opacity = 0;	//解除メッセージを消去
+			uchidomeBtn.opacity = 1;	//解除ボタンを消去して打ち止めボタンを表示
+			kaijoBtn.opacity = 0;
+			kaijoBtn.moveTo(0,0);
+			uchidomeBtn.moveTo(140, 43);
+			pekaFlg = 0;
+			gogoButton.image = game.assets[gogoOffImg];	
+		}
+
+		//打ち止めボタン
+		const uchidomeBtn = new Sprite(120, 42);
+		uchidomeBtn.moveTo(140, 43);
+		uchidomeBtn.image = game.assets[uchidomeImg];
+		mainScene.addChild(uchidomeBtn);
+		//打ち止めボタンクリック処理
+		uchidomeBtn.ontouchend = function(){
+			uchiFlg = 1; 
+			uchichuMsgBtn.opacity = 1;//打ち止め中メッセージを表示
+			uchidomeBtn.opacity = 0;	//打ち止めボタンを消去して解除ボタンを表示
+			kaijoBtn.opacity = 1;
+			uchidomeBtn.moveTo(0,0);
+			kaijoBtn.moveTo(140, 43);
 		}
 
 	};
