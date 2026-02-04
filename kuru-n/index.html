@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>3D 3段クルーン抽選機 (Local)</title>
+    <title>沼</title>
     <style>
         body { margin: 0; background: #111; overflow: hidden; font-family: sans-serif; }
         #ui { position: absolute; top: 20px; left: 20px; color: white; z-index: 10; }
@@ -12,16 +12,16 @@
 </head>
 <body>
     <div id="ui">
-        <h1>3D 3-Tier Croon</h1>
-        <button onclick="launchBall()">ボール投入！</button>
+        <h1>沼（作成中）</h1>
+        <h1>投入数：</h1>
+        <button onclick="launchBall()">投入</button>
     </div>
 
-    <!-- ローカルファイルを指定 -->
     <script type="importmap">
         {
             "imports": {
-                "three": "./three.module.js",
-                "cannon-es": "./cannon-es.js"
+                "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+                "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/+esm"
             }
         }
     </script>
@@ -48,48 +48,66 @@
         sunLight.position.set(10, 20, 10);
         scene.add(sunLight);
 
-        // 物理演算の世界
+        // 物理演算範囲
         const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -9.82, 0) });
+        
 
         // 皿の作成
         function createDish(y, holeIndex) {
-            const segs = 18;
-            const radius = 4;
-            for (let i = 0; i < segs; i++) {
-                if (i === holeIndex) continue; // 穴の部分だけ隙間を空ける
+            const points = [];
+            for (let i = 0; i <= 10; i++) {
+                // x: 中心からの距離（半径）, y: 高さ
+                const x = i * 0.5; 
+                const y = Math.pow(i * 0.3, 1.2); 
+                points.push(new THREE.Vector2(x, y));
 
-                const angle = (i / segs) * Math.PI * 2;
-                const body = new CANNON.Body({ mass: 0 });
-                const shape = new CANNON.Box(new CANNON.Vec3(1, 0.1, 2));
-                body.addShape(shape);
-                body.position.set(Math.cos(angle) * 2.5, y, Math.sin(angle) * 2.5);
-                body.quaternion.setFromEuler(-0.6, angle + Math.PI / 2, 0);
-                world.addBody(body);
+                // 衝突判定を作成
+                // すり鉢の本体（静止している）
+                const bowlBody = new CANNON.Body({ mass: 0 }); 
 
-                // 視覚的な皿（簡易表示）
-                const mesh = new THREE.Mesh(
-                    new THREE.BoxGeometry(2, 0.1, 4),
-                    new THREE.MeshPhongMaterial({ color: 0x777777 })
-                );
-                mesh.position.copy(body.position);
-                mesh.quaternion.copy(body.quaternion);
-                scene.add(mesh);
+                // すり鉢の壁面として、4つの斜面を配置する
+                const wallShape = new CANNON.Box(new CANNON.Vec3(1, 5, 5)); // 薄い箱
+
+                // 4つの壁を異なる角度で配置
+                bowlBody.addShape(wallShape, new CANNON.Vec3(5, 0, 0), new CANNON.Quaternion().setFromEuler(0, 0, 0.5));
+                bowlBody.addShape(wallShape, new CANNON.Vec3(-5, 0, 0), new CANNON.Quaternion().setFromEuler(0, 0, -0.5));
+                // ...追加の壁
+
+                world.addBody(bowlBody);
             }
+
+            // 2. 回転体のジオメトリを作成
+            // LatheGeometry(断面点, 分割数)
+            const geometry = new THREE.LatheGeometry(points, 32);
+            // 3. マテリアル（質感）を設定
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0xeeeeee, 
+                side: THREE.DoubleSide,
+                flatShading: false ,
+                metalness: 0.9,        // 1.0で完全な金属
+                roughness: 0.3        // 0.0〜0.2程度で鏡面、上げるとマットな金属
+            });
+
+            // メッシュを作成してシーンに追加
+            const plate = new THREE.Mesh(geometry, material);
+            scene.add(plate);            
         }
 
         createDish(6, 0);   // 上段
-        createDish(1, 6);   // 中段
-        createDish(-4, 12); // 下段
 
         const balls = [];
         const ballGeo = new THREE.SphereGeometry(0.2, 16, 16);
-        const ballMat = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+        const ballMat = new THREE.MeshStandardMaterial({
+            color: 0xaaaaaa,       
+            metalness: 1.0,        // 1.0で完全な金属
+            roughness: 0.3        // 0.0〜0.2程度で鏡面、上げるとマットな金属
+        });
 
         window.launchBall = () => {
             const ballBody = new CANNON.Body({
                 mass: 1,
                 shape: new CANNON.Sphere(0.2),
-                position: new CANNON.Vec3(3, 11, 0)
+                position: new CANNON.Vec3(1, 10, -3)
             });
             ballBody.velocity.set(0, 0, 5); // 横回転の初速
             world.addBody(ballBody);
